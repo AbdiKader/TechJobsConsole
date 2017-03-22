@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace TechJobsConsole
 {
@@ -63,7 +66,9 @@ namespace TechJobsConsole
                     // Fetch results
                     if (columnChoice.Equals("all"))
                     {
-                        Console.WriteLine("Search all fields not yet implemented.");
+                        searchResults = JobData.FindByValue(searchTerm);
+                        PrintJobs(searchResults);
+
                     }
                     else
                     {
@@ -100,7 +105,7 @@ namespace TechJobsConsole
                 }
 
                 string input = Console.ReadLine();
-                choiceIdx = int.Parse(input);
+                 choiceIdx = int.Parse(input);
 
                 if (choiceIdx < 0 || choiceIdx >= choiceKeys.Length)
                 {
@@ -118,7 +123,36 @@ namespace TechJobsConsole
 
         private static void PrintJobs(List<Dictionary<string, string>> someJobs)
         {
-            Console.WriteLine("printJobs is not implemented yet");
+            string[] temp = new string[someJobs.Count];
+
+
+
+            Console.WriteLine("*******************************\n");
+            if (temp.Length > 0)
+            {
+                foreach (Dictionary<string, string> jobs in someJobs)
+                {
+                    Console.WriteLine("*******************************\n");
+                    foreach (KeyValuePair<string, string> kv in jobs)
+                    {
+
+                        Console.WriteLine("{0}: {1}\n", kv.Key, kv.Value);
+                    }
+
+
+
+
+
+                }
+            }
+            else
+            {
+                Console.WriteLine("Sorry no jobs has been found for this selection");
+            }
+                Console.WriteLine("*******************************\n");
+
+            }
         }
+
     }
-}
+

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace TechJobsConsole
@@ -16,127 +15,147 @@ namespace TechJobsConsole
             return AllJobs;
         }
 
-        /*
-         * Returns a list of all values contained in a given column,
-         * without duplicates. 
-         */
         public static List<string> FindAll(string column)
+            
         {
             LoadData();
-
             List<string> values = new List<string>();
-
-            foreach (Dictionary<string, string> job in AllJobs)
+            foreach(Dictionary<string, string> jobs in AllJobs)
             {
-                string aValue = job[column];
-
+                string aValue = jobs[column];
                 if (!values.Contains(aValue))
-                {
+                    {
                     values.Add(aValue);
                 }
             }
             return values;
         }
-
-        public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
+        public static List<Dictionary<string,string>> FindByColumnAndValue(string column, string value)
         {
-            // load data, if not already loaded
             LoadData();
-
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
-
-            foreach (Dictionary<string, string> row in AllJobs)
+            foreach(Dictionary<string, string> rows in AllJobs)
             {
-                string aValue = row[column];
-
-                if (aValue.Contains(value))
+                string aValue = rows[column];
+                if (aValue.ToLower().Contains(value.ToLower()))
                 {
-                    jobs.Add(row);
+                    jobs.Add(rows);
                 }
             }
-
             return jobs;
         }
-
-        /*
-         * Load and parse data from job_data.csv
-         */
         private static void LoadData()
         {
-
             if (IsDataLoaded)
             {
                 return;
             }
-
             List<string[]> rows = new List<string[]>();
-
-            using (StreamReader reader = File.OpenText("job_data.csv"))
+            using(StreamReader reader = File.OpenText("job_data.csv"))
             {
-                while (reader.Peek() >= 0)
+                while(reader.Peek( ) >= 0)
                 {
                     string line = reader.ReadLine();
-                    string[] rowArrray = CSVRowToStringArray(line);
-                    if (rowArrray.Length > 0)
+                    string[] rowToArray = CSVRowToStringArray(line);
+                    if(rowToArray.Length > 0)
                     {
-                        rows.Add(rowArrray);
+                        rows.Add(rowToArray);
                     }
+
+
                 }
-            }
 
-            string[] headers = rows[0];
-            rows.Remove(headers);
+                string[] headers = rows[0];
+                rows.Remove(headers);
 
-            // Parse each row array into a more friendly Dictionary
-            foreach (string[] row in rows)
-            {
-                Dictionary<string, string> rowDict = new Dictionary<string, string>();
-
-                for (int i = 0; i < headers.Length; i++)
+                foreach(string[] row in rows)
                 {
-                    rowDict.Add(headers[i], row[i]);
-                }
-                AllJobs.Add(rowDict);
-            }
+                    Dictionary<string, string> rowDict = new Dictionary<string, string>();
+                    for(int i=0; i < headers.Length; i++)
+                    {
+                        rowDict.Add(headers[i], row[i]);
+                    }
 
+                    AllJobs.Add(rowDict);
+                }
+                
+            }
             IsDataLoaded = true;
+
         }
 
-        /*
-         * Parse a single line of a CSV file into a string array
-         */
-        private static string[] CSVRowToStringArray(string row, char fieldSeparator = ',', char stringSeparator = '\"')
+        private static string[] CSVRowToStringArray(string rows, char fieldSep=',', char itemSep = '\"')
         {
-            bool isBetweenQuotes = false;
-            StringBuilder valueBuilder = new StringBuilder();
-            List<string> rowValues = new List<string>();
-
-            // Loop through the row string one char at a time
-            foreach (char c in row.ToCharArray())
+            bool IsQuotes = false;
+            StringBuilder builder = new StringBuilder();
+            List<string> row = new List<string>();
+            foreach(char c in rows.ToCharArray())
             {
-                if ((c == fieldSeparator && !isBetweenQuotes))
+                if(c== fieldSep && !IsQuotes)
                 {
-                    rowValues.Add(valueBuilder.ToString());
-                    valueBuilder.Clear();
+                    row.Add(builder.ToString());
+                    builder.Clear();
+
                 }
                 else
                 {
-                    if (c == stringSeparator)
+                    if (c == itemSep)
                     {
-                        isBetweenQuotes = !isBetweenQuotes;
+                        IsQuotes = !IsQuotes;
                     }
                     else
                     {
-                        valueBuilder.Append(c);
+                        builder.Append(c);
                     }
                 }
             }
-
-            // Add the final value
-            rowValues.Add(valueBuilder.ToString());
-            valueBuilder.Clear();
-
-            return rowValues.ToArray();
+            row.Add(builder.ToString());
+            return row.ToArray();
         }
+
+           public static List<Dictionary<string,string>> FindByValue(string value)
+           {
+               LoadData();
+               List<Dictionary<string, string>> results = new List<Dictionary<string, string>>();
+
+              
+               foreach(Dictionary<string, string> jobs in AllJobs)
+
+               {
+                foreach(KeyValuePair<string,string> job in jobs)
+                {
+                    
+                    if (job.Value.ToLower().Contains(value.ToLower()))
+                    {
+                        results.Add(jobs);
+
+                    }
+
+                }
+                
+                
+
+               
+           
+                    
+                      
+                        
+
+                    
+
+                
+
+
+
+            }
+
+
+
+               return results;
+
+
+           }
+           
+  
     }
 }
