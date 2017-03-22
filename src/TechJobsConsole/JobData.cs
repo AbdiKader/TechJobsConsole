@@ -132,12 +132,7 @@ namespace TechJobsConsole
                     }
 
                 }
-                
-                
-
-               
-           
-                    
+         
                       
                         
 
